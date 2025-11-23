@@ -1,0 +1,28 @@
+.bloc-trombinoscope{
+    text-align: center;
+    padding-bottom: 1px;
+}
+
+.bloc-trombinoscope--photo{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 300px;
+}
+
+.bloc-trombinoscope--photo img{
+    height: 100%;
+    width: auto;
+    object-fit: contain;
+}
+
+.bloc-trombinoscope--photo .dashicons{
+    height: 150px;
+    width: 150px;
+    font-size: 150px;
+}
+
+.bloc-trombinoscope--contenu > *{
+    padding-left: 20px;
+    padding-right: 20px;
+}
