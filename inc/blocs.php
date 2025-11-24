@@ -8,10 +8,6 @@ class WPCollectivites_Blocs {
     }
 
     public function register_block_category() {
-        if (!function_exists('register_block_type')) {
-            return;
-        }
-
         add_filter('block_categories_all', function($categories) {
             return array_merge(
                     $categories,
@@ -27,42 +23,51 @@ class WPCollectivites_Blocs {
 
     public function register_blocks() {
         // Marché public
-        register_block_type(__DIR__ . '/../blocs/bloc-marche-public.php', [
+        register_block_type('wpcollectivites/marche-public', [
                 'editor_script' => 'wpcollectivites-bloc-marche-public-editor',
                 'script' => 'wpcollectivites-bloc-marche-public-front',
                 'style' => 'wpcollectivites-bloc-marche-public-style',
                 'render_callback' => function($attributes, $content, $block) {
                     ob_start();
-                    include __DIR__ . '/../blocs/bloc-marche-public.php';
+                    include plugin_dir_path(__FILE__) . '../blocs/bloc-marche-public.php';
                     return ob_get_clean();
-                }
+                },
+                'attributes' => [
+                        'intitule' => ['type' => 'string', 'default' => ''],
+                        'date_publication' => ['type' => 'string', 'default' => ''],
+                        'date_cloture' => ['type' => 'string', 'default' => ''],
+                        'type_marche' => ['type' => 'string', 'default' => ''],
+                        'lien' => ['type' => 'string', 'default' => ''],
+                        'profil_acheteur' => ['type' => 'string', 'default' => ''],
+                        'avis_complet' => ['type' => 'string', 'default' => '']
+                ]
         ]);
 
         // Actes officiels
-        register_block_type(__DIR__ . '/../blocs/bloc-actes-officiels.php', [
+        register_block_type('wpcollectivites/actes-officiels', [
                 'editor_script' => 'wpcollectivites-bloc-actes-officiels-editor',
                 'render_callback' => function($attributes, $content, $block) {
                     ob_start();
-                    include __DIR__ . '/../blocs/bloc-actes-officiels.php';
+                    include plugin_dir_path(__FILE__) . '../blocs/bloc-actes-officiels.php';
                     return ob_get_clean();
-                }
+                },
+                'attributes' => [
+                        'type_actes' => ['type' => 'number', 'default' => 0]
+                ]
         ]);
 
         // Trombinoscope
-        register_block_type(__DIR__ . '/../blocs/bloc-trombinoscope.php', [
+        register_block_type('wpcollectivites/trombinoscope', [
                 'editor_script' => 'wpcollectivites-bloc-trombinoscope-editor',
                 'style' => 'wpcollectivites-bloc-trombinoscope-style',
                 'render_callback' => function($attributes, $content, $block) {
                     ob_start();
-                    // Passer la couleur de fond au JS
-                    wp_localize_script(
-                            'wpcollectivites-bloc-trombinoscope-editor',
-                            'wpcTrombinoscope',
-                            ['couleur_fond' => wpc_get_option('trombinoscope_couleur_fond') ?: '#ffffff']
-                    );
-                    include __DIR__ . '/../blocs/bloc-trombinoscope.php';
+                    include plugin_dir_path(__FILE__) . '../blocs/bloc-trombinoscope.php';
                     return ob_get_clean();
-                }
+                },
+                'attributes' => [
+                        'membre_id' => ['type' => 'number', 'default' => 0]
+                ]
         ]);
     }
 
@@ -98,6 +103,19 @@ class WPCollectivites_Blocs {
                     $plugin_url . 'build/bloc-trombinoscope.js',
                     $asset_file['dependencies'],
                     $asset_file['version']
+            );
+
+            // Localiser le script pour passer la couleur de fond
+            $couleur_fond = '#ffffff';
+            $options = get_option('wpcollectivites_options', []);
+            if (isset($options['trombinoscope_couleur_fond'])) {
+                $couleur_fond = $options['trombinoscope_couleur_fond'];
+            }
+
+            wp_localize_script(
+                    'wpcollectivites-bloc-trombinoscope-editor',
+                    'wpcTrombinoscope',
+                    ['couleur_fond' => $couleur_fond]
             );
         }
 
