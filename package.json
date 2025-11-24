@@ -1,0 +1,14 @@
+{
+  "name": "wp-collectivites",
+  "version": "1.2.3",
+  "description": "Plugin WordPress pour les collectivités",
+  "scripts": {
+    "build": "wp-scripts build",
+    "start": "wp-scripts start",
+    "format": "wp-scripts format",
+    "lint:js": "wp-scripts lint-js"
+  },
+  "devDependencies": {
+    "@wordpress/scripts": "^27.0.0"
+  }
+}

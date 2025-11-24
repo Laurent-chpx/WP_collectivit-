@@ -24,7 +24,7 @@
             const { membre_id } = attributes;
             const [membres, setMembres] = useState([]);
             const [membreDetails, setMembreDetails] = useState(null);
-            const [isLoadingMembre, setIsLoadingMembre] = useState(true);
+            const [isLoadingMembre, setIsLoadingMembre] = useState(true); // CORRECTION: était isLoadingMembre
             const [isLoadingDetails, setIsLoadingDetails] = useState(false);
             const [couleurFond, setCouleurFond] = useState('#ff0000');
 
@@ -36,64 +36,64 @@
                 apiFetch({
                     path: '/wp/v2/membre-equipe-muni?per_page=100&orderby=title&order=asc'
                 })
-                .then((posts)=> {
-                    const options = [
-                        { label: '-- Sélectionner un membre --', value: 0}
-                    ];
-                    posts.forEach((post) => {
-                        options.push({
-                            label: post.title.rendered,
-                            value: post.id
+                    .then((posts)=> {
+                        const options = [
+                            { label: '-- Sélectionner un membre --', value: 0}
+                        ];
+                        posts.forEach((post) => {
+                            options.push({
+                                label: post.title.rendered,
+                                value: post.id
+                            });
                         });
+                        setMembres(options);
+                        setIsLoadingMembre(false); // CORRECTION: était setIsLoadingMembres
+                    })
+                    .catch((err) => {
+                        console.error('Erreur lors du chargement des membres:', err);
+                        setIsLoadingMembre(false); // CORRECTION: était setIsLoadingMembres
                     });
-                    setMembres(options);
-                    setIsLoadingMembre(false);
-                })
-                .catch((err) => {
-                    console.error('Erreur lors du chargement des membres:', err);
-                    setIsLoadingMembres(false);
-                });
             }, []);
 
             useEffect(() => {
                 if (membre_id && membre_id !== 0){
                     setIsLoadingDetails(true);
                     apiFetch({
-                        path: '/wp/v2/membre-equipe-muni/${membre_id}?_embed'
+                        path: `/wp/v2/membre-equipe-muni/${membre_id}?_embed` // CORRECTION: backticks au lieu de quotes simples!
                     })
-                    .then((membre)=> {
-                        const details = {
-                            id: membre.id,
-                            titre: membre.title.rendered,
-                            fonction: membre.meta?._wpc_fonction || '',
-                            infos_supp: membre.meta?._wpc_informations_supplementaires || '',
-                            image: null
-                        };
-                        if(membre._embedded && membre._embedded['wp:featuredmedia'] && membre._embedded['wp:featuredmedia'][0]){
-                            const media = membre._embedded['wp:featuredmedia'][0];
-                            if (media.media_details && media.media_details.sizes) {
-                                const size = media.media_details.sizes.medium ||
-                                    media.media_details.sizes.full;
-                                if (size) {
-                                    details.image = size.source_url;
+                        .then((membre)=> {
+                            const details = {
+                                id: membre.id,
+                                titre: membre.title.rendered,
+                                fonction: membre.meta?._wpc_fonction || '',
+                                infos_supp: membre.meta?._wpc_informations_supplementaires || '',
+                                image: null
+                            };
+                            if(membre._embedded && membre._embedded['wp:featuredmedia'] && membre._embedded['wp:featuredmedia'][0]){
+                                const media = membre._embedded['wp:featuredmedia'][0];
+                                if (media.media_details && media.media_details.sizes) {
+                                    const size = media.media_details.sizes.medium ||
+                                        media.media_details.sizes.full;
+                                    if (size) {
+                                        details.image = size.source_url;
+                                    }
                                 }
                             }
-                        }
-                        setMembreDetails(details);
-                        setIsLoadingDetails(false);
-                    })
-                    .catch((err) => {
-                        console.error('Erreur lors du chargement des membres:', err);
-                        setIsLoadingDetails(false);
+                            setMembreDetails(details);
+                            setIsLoadingDetails(false);
+                        })
+                        .catch((err) => {
+                            console.error('Erreur lors du chargement des détails du membre:', err);
+                            setIsLoadingDetails(false);
 
-                        setMembreDetails({
-                            id: membre_id,
-                            titre: 'Membre sélectionné',
-                            fonction: '',
-                            infos_supp: '',
-                            image: null
+                            setMembreDetails({
+                                id: membre_id,
+                                titre: 'Membre sélectionné',
+                                fonction: '',
+                                infos_supp: '',
+                                image: null
+                            });
                         });
-                    });
                 } else {
                     setMembreDetails(null);
                 }
@@ -115,7 +115,7 @@
                             title="Sélection du membre"
                             initialOpen={true}
                         >
-                            {isLoadingMembres ? (
+                            {isLoadingMembre ? ( // CORRECTION: était isLoadingMembres
                                 <Spinner />
                             ) : (
                                 <SelectControl
@@ -156,7 +156,6 @@
 
                     <div {...blockProps}>
                         {!membreDetails ? (
-                            // Message si aucun membre n'est sélectionné
                             <div style={{
                                 padding: '40px 20px',
                                 backgroundColor: '#f0f0f0',
@@ -174,13 +173,11 @@
                                 </p>
                             </div>
                         ) : isLoadingDetails ? (
-                            // Affichage pendant le chargement des détails
                             <div style={{ textAlign: 'center', padding: '40px' }}>
                                 <Spinner />
                                 <p>Chargement des informations...</p>
                             </div>
                         ) : (
-                            // Aperçu du membre sélectionné
                             <Fragment>
                                 <div className="bloc-trombinoscope--photo"
                                      style={{

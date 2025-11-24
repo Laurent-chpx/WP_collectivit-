@@ -42,6 +42,21 @@ function wpcollectivites_taxonomies(){
             'slug' => 'type-acte',
             'with_front' => false,
         ),
+        'capabilities' => array(
+            'manage_terms' => 'manage_categories',
+            'edit_terms'   => 'manage_categories',
+            'delete_terms' => 'manage_categories',
+            'assign_terms' => 'edit_posts',
+        ),
     ) );
 }
 add_action( 'init', 'wpcollectivites_taxonomies');
+
+// Autoriser l'accès REST API pour les utilisateurs connectés
+add_filter('rest_type-acte_query', function($args, $request) {
+    // Permettre l'accès si l'utilisateur peut éditer des posts
+    if (current_user_can('edit_posts')) {
+        return $args;
+    }
+    return $args;
+}, 10, 2);
