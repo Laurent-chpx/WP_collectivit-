@@ -165,7 +165,15 @@ class WPCollectivites_Options{
                     </h2>
 
                     <div class="tab-content" id="tab-alerte">
-                        <?php do_settings_sections($this->page_slug); ?>
+                        <table class="form-table">
+                            <?php do_settings_fields($this->page_slug, 'wpcollectivites_alerte_section'); ?>
+                        </table>
+                    </div>
+
+                    <div class="tab-content" id="tab-trombinoscope">
+                        <table class="form-table">
+                            <?php do_settings_fields($this->page_slug, 'wpcollectivites_trombino_section'); ?>
+                        </table>
                     </div>
                 </div>
 
@@ -311,8 +319,13 @@ class WPCollectivites_Options{
 
         // Styles personnalisés pour améliorer l'apparence
         wp_add_inline_style('wp-admin', '
-            .wpc-tabs .tab-content { display: none; }
-            .wpc-tabs .tab-content:first-child { display: block; }
+            .wpc-tabs .tab-content { 
+                display: none; 
+                padding-top: 20px;
+            }
+            .wpc-tabs .tab-content.active { 
+                display: block; 
+            }
             
             /* Style pour le switch checkbox comme ACF */
             .switch {
@@ -363,14 +376,17 @@ class WPCollectivites_Options{
         // Script pour gérer les onglets
         wp_add_inline_script('jquery', '
             jQuery(document).ready(function($) {
+                // Afficher le premier onglet au chargement
+                $("#tab-alerte").addClass("active");
+                
                 $(".nav-tab").on("click", function(e) {
                     e.preventDefault();
                     $(".nav-tab").removeClass("nav-tab-active");
                     $(this).addClass("nav-tab-active");
                     
                     var tab = $(this).data("tab");
-                    $(".tab-content").hide();
-                    $("#tab-" + tab).show();
+                    $(".tab-content").removeClass("active");
+                    $("#tab-" + tab).addClass("active");
                 });
             });
         ');

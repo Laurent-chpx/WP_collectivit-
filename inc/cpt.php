@@ -14,7 +14,7 @@ function wpcollectivites_cpt(){
             'add_new_item' => 'Ajouter un nouveau document',
             'add_new' => 'Ajouter ',
             'new_item' => 'Nouveau document',
-            'parent_item_colon' => 'Parent :',
+            'parent_item_colon' => 'Parent :',
             'search_items' => 'Rechercher',
             'not_found' => 'Aucun acte officiel trouvé',
             'not_found_in_trash' => 'Aucun acte officiel trouvé dans la corbeille',
@@ -37,7 +37,7 @@ function wpcollectivites_cpt(){
         'public' => true,
         'publicly_queryable' => false,
         'show_in_rest' => true,
-        'rest_base' => 'acte',
+        'rest_base' => 'acte-officiel',
         'menu_position' => 21,
         'menu_icon' => 'dashicons-pdf',
         'supports' => ['title'],
@@ -62,8 +62,8 @@ function wpcollectivites_cpt(){
             'view_items' => 'Voir les membres de l\'équipe municipale',
             'add_new_item' => 'Ajouter un membre de l\'équipe municipale',
             'add_new' => 'Ajouter un membre de l\'équipe municipale',
-            'new_item' => 'Nouveau nembre de l\'équipe municipale',
-            'parent_item_colon' => 'Membre de l\'équipe municipale parent :',
+            'new_item' => 'Nouveau membre de l\'équipe municipale',
+            'parent_item_colon' => 'Membre de l\'équipe municipale parent :',
             'search_items' => 'Rechercher un membre de l\'équipe municipale',
             'not_found' => 'Aucun membre de l\'équipe municipale trouvé',
             'not_found_in_trash' => 'Aucun membre de l\'équipe municipale trouvé dans la corbeille',
@@ -84,8 +84,10 @@ function wpcollectivites_cpt(){
             'item_link_description' => 'Un lien vers un membre de l\'équipe municipale.',
         ),
         'public' => true,
+        'publicly_queryable' => true,
         'show_in_nav_menus' => false,
         'show_in_rest' => true,
+        'rest_base' => 'membre-equipe-muni',
         'menu_icon' => 'dashicons-businessperson',
         'supports' => array(
             0 => 'title',
@@ -96,4 +98,3 @@ function wpcollectivites_cpt(){
     ) );
 }
 add_action( 'init', 'wpcollectivites_cpt');
-

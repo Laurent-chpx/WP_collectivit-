@@ -49,14 +49,14 @@
                     setIsLoading(false);
                 })
                 .catch((err) => {
-                    console.error('Erreur lors du chargement des types d\'actes:', error);
+                    console.error('Erreur lors du chargement des types d\'actes:', err);
                     setIsLoading(false);
                 });
             },[]);
 
             const onChangeType = (value) => {
                 const numValue = parseInt(value);
-                setAttributes({ typa_actes: numValue });
+                setAttributes({ type_actes: numValue });
 
                 const selected = typesActes.find(type => type.value === numValue);
                 if (selected) {

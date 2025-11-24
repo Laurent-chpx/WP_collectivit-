@@ -28,10 +28,20 @@ function wpcollectivites_taxonomies(){
             'item_link_description' => 'Un lien vers un type d\'acte',
         ),
         'public' => true,
+        'publicly_queryable' => true,
         'hierarchical' => true,
         'show_in_menu' => true,
         'show_in_rest' => true,
+        'rest_base' => 'type-acte',
+        'rest_controller_class' => 'WP_REST_Terms_Controller',
         'show_admin_column' => true,
+        'show_in_nav_menus' => true,
+        'show_ui' => true,
+        'query_var' => true,
+        'rewrite' => array(
+            'slug' => 'type-acte',
+            'with_front' => false,
+        ),
     ) );
 }
 add_action( 'init', 'wpcollectivites_taxonomies');

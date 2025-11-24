@@ -24,6 +24,7 @@ class WPCollectivites_Blocs {
 
     //Remplacement de acf_register_block
     public function register_blocks() {
+        $this->register_block_assets();
 
         //Bloc marché public
         register_block_type('wpcollectivites/marche-public',[
@@ -116,54 +117,61 @@ class WPCollectivites_Blocs {
             'style' => 'wpcollectivites-bloc-trombinoscope-style'
         ]);
 
-        $this->register_block_assets();
+
     }
 
     public function register_block_assets() {
         $plugin_url = plugin_dir_url( __DIR__ );
         $plugin_path = plugin_dir_path( __DIR__ );
 
+        // Scripts éditeur
         wp_register_script(
-            'wpcollectivites-bloc-marche-public-editor',
-            $plugin_url . 'assets/js/bloc-marche-public-editor.js',
-            ['wp-blocks', 'wp-element', 'wp-editor', 'wp-components', 'wp-data'],
-            filemtime($plugin_path . 'assets/js/bloc-marche-public-editor.js')
+                'wpcollectivites-bloc-marche-public-editor',
+                $plugin_url . 'assets/js/bloc-marche-public-editor.js',
+                ['wp-blocks', 'wp-element', 'wp-block-editor', 'wp-components'],
+                filemtime($plugin_path . 'assets/js/bloc-marche-public-editor.js'),
+                false
         );
 
         wp_register_script(
-            'wpcollectivites-bloc-actes-officiels-editor',
-            $plugin_url . 'assets/js/bloc-actes-officiels-editor.js',
-            ['wp-blocks', 'wp-element', 'wp-editor', 'wp-components', 'wp-data'],
-            filemtime($plugin_path . 'assets/js/bloc-actes-officiels-editor.js')
+                'wpcollectivites-bloc-actes-officiels-editor',
+                $plugin_url . 'assets/js/bloc-actes-officiels-editor.js',
+                ['wp-blocks', 'wp-element', 'wp-block-editor', 'wp-components', 'wp-api-fetch', 'wp-i18n'],
+                filemtime($plugin_path . 'assets/js/bloc-actes-officiels-editor.js'),
+                false
         );
 
         wp_register_script(
-            'wpcollectivites-bloc-trombinoscope-editor',
-            $plugin_url . 'assets/js/bloc-trombinoscope-editor.js',
-            ['wp-blocks', 'wp-element', 'wp-editor', 'wp-components', 'wp-data'],
-            filemtime($plugin_path . 'assets/js/bloc-trombinoscope-editor.js')
+                'wpcollectivites-bloc-trombinoscope-editor',
+                $plugin_url . 'assets/js/bloc-trombinoscope-editor.js',
+                ['wp-blocks', 'wp-element', 'wp-block-editor', 'wp-components', 'wp-api-fetch', 'wp-i18n'],
+                filemtime($plugin_path . 'assets/js/bloc-trombinoscope-editor.js'),
+                false
         );
 
-        // Script frontend pour le bloc marché public (déjà existant)
+        // Script frontend pour le bloc marché public
         wp_register_script(
-            'wpcollectivites-bloc-marche-public-front',
-            $plugin_url . 'assets/js/bloc_marche_public.js',
-            ['jquery'],
-            '1.0.0'
+                'wpcollectivites-bloc-marche-public-front',
+                $plugin_url . 'assets/js/bloc_marche_public.js',
+                ['jquery'],
+                filemtime($plugin_path . 'assets/js/bloc_marche_public.js'),
+                true
         );
-        if (file_exists($plugin_path . 'assets/css/bloc-marche-public.css')) {
-            wp_register_style(
+
+        // Styles
+        wp_register_style(
                 'wpcollectivites-bloc-marche-public-style',
-                $plugin_url . 'assets/css/bloc-marche-public.css'
-            );
-        }
+                $plugin_url . 'assets/css/bloc-marche-public.css',
+                [],
+                file_exists($plugin_path . 'assets/css/bloc-marche-public.css') ? filemtime($plugin_path . 'assets/css/bloc-marche-public.css') : '1.0.0'
+        );
 
-        if (file_exists($plugin_path . 'assets/css/bloc-trombinoscope.css')) {
-            wp_register_style(
+        wp_register_style(
                 'wpcollectivites-bloc-trombinoscope-style',
-                $plugin_url . 'assets/css/bloc-trombinoscope.css'
-            );
-        }
+                $plugin_url . 'assets/css/bloc-trombinoscope.css',
+                [],
+                file_exists($plugin_path . 'assets/css/bloc-trombinoscope.css') ? filemtime($plugin_path . 'assets/css/bloc-trombinoscope.css') : '1.0.0'
+        );
     }
 
     public function enqueue_editor_assets() {

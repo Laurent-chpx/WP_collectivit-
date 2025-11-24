@@ -1,0 +1,22 @@
+.bloc-marche-public {
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.bloc-marche-public h3 {
+    margin-top: 0;
+}
+
+.bloc-marche-public p {
+    margin: 10px 0;
+}
+
+.bloc-marche-public--avisComplet {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #ddd;
+}
+
+.bloc-marche-public--btnLireAvisComplet {
+    cursor: pointer;
+}

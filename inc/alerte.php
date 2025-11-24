@@ -1,5 +1,4 @@
 <?php
-
 class WPCollectivites_Alerte {
 
     private $activation;
@@ -13,13 +12,13 @@ class WPCollectivites_Alerte {
 
     public function __construct() {
 
-        $options = get_option('wpcollectivite_options', []);
+        $options = get_option('wpcollectivites_options', []); // CORRECTION: était 'wpcollectivite_options'
 
         $this->activation = isset($options['message_alerte_activation']) ? $options['message_alerte_activation'] : false;
         $this->zoneAffichage = isset($options['message_alerte_zone_affichage']) ? $options['message_alerte_zone_affichage'] : 'partout';
         $this->typeAffichage = isset($options['message_alerte_type_affichage']) ? $options['message_alerte_type_affichage'] : 'popup';
         $this->debutAffichage = isset($options['message_alerte_debut_periode_daffichage']) ? $options['message_alerte_debut_periode_daffichage'] : '';
-        $this->finAffichage = isset($options['message_alerte_fin_periode_affichage']) ? $options['message_alerte_fin_periode_affichage'] : '';
+        $this->finAffichage = isset($options['message_alerte_fin_periode_affichage']) ? $options['message_alerte_fin_periode_affichage'] : ''; // CORRECTION: était 'message_alerte_fin_periode_daffichage'
         $this->texte = isset($options['message_alerte_texte']) ? $options['message_alerte_texte'] : '';
         $this->couleurFond = isset($options['message_alerte_couleur_fond']) ? $options['message_alerte_couleur_fond'] : '#000000';
         $this->couleurTexte = isset($options['message_alerte_couleur_texte']) ? $options['message_alerte_couleur_texte'] : '#FFFFFF';
@@ -29,8 +28,26 @@ class WPCollectivites_Alerte {
 
     public function affichage(){
         $ajd = (new DateTime())->format('Y-m-d');
-        $date_debut_ok = !$this->debutAffichage || $this->debutAffichage <= $ajd;
-        $date_fin_ok = !$this->finAffichage || $this->finAffichage >= $ajd;
+        
+        // Conversion des dates au format Y-m-d si nécessaire
+        $date_debut = '';
+        if ($this->debutAffichage) {
+            $date_obj = DateTime::createFromFormat('Y-m-d', $this->debutAffichage);
+            if ($date_obj) {
+                $date_debut = $date_obj->format('Y-m-d');
+            }
+        }
+        
+        $date_fin = '';
+        if ($this->finAffichage) {
+            $date_obj = DateTime::createFromFormat('Y-m-d', $this->finAffichage);
+            if ($date_obj) {
+                $date_fin = $date_obj->format('Y-m-d');
+            }
+        }
+        
+        $date_debut_ok = !$date_debut || $date_debut <= $ajd;
+        $date_fin_ok = !$date_fin || $date_fin >= $ajd;
 
         if(
             $this->activation &&
@@ -39,10 +56,10 @@ class WPCollectivites_Alerte {
             ($this->zoneAffichage == 'partout' || is_front_page())
         ){
             //JS
-            wp_enqueue_script('wpcollectivites-jscookie', plugin_dir_url(__DIR__).'/assets/js/jscookie.js', [], '3.0.5', true);
-            wp_enqueue_script('wpcollectivites-message-alerte-js', plugin_dir_url(__DIR__).'/assets/js/message_alerte.js', ['jquery', 'wpcollectivites-jscookie'], '1.0.0', true);
+            wp_enqueue_script('wpcollectivites-jscookie', plugin_dir_url(__DIR__).'assets/js/jscookie.js', [], '3.0.5', true);
+            wp_enqueue_script('wpcollectivites-message-alerte-js', plugin_dir_url(__DIR__).'assets/js/message_alerte.js', ['jquery', 'wpcollectivites-jscookie'], '1.0.0', true);
             //CSS
-            wp_enqueue_style('wpcollectivites-message-alerte-css', plugin_dir_url(__DIR__).'/assets/css/message_alerte.css');
+            wp_enqueue_style('wpcollectivites-message-alerte-css', plugin_dir_url(__DIR__).'assets/css/message_alerte.css');
 
             if($this->typeAffichage == 'popup'){
                 $this->popup();

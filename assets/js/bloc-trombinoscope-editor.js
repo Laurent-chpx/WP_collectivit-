@@ -50,7 +50,7 @@
                     setIsLoadingMembre(false);
                 })
                 .catch((err) => {
-                    console.error('Erreur lors du chargement des membres:', error);
+                    console.error('Erreur lors du chargement des membres:', err);
                     setIsLoadingMembres(false);
                 });
             }, []);
